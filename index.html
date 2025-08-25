@@ -364,10 +364,9 @@
             { file: "image.png", type: "image" },
             { file: "IMG_4103.jpg", type: "image" },
             
-            // Videos - NOTE: These may be too large for GitHub (>50MB each)
-            // Consider compressing or hosting elsewhere
-            { file: "video1-compressed.mp4", type: "video", original: "C882D2EE-AAAF-421A-9B25-99FC5C8EB473.mov" },
-            { file: "video2-compressed.mp4", type: "video", original: "E53B89A5-F42E-405E-9278-7EDE83946CC7.mov" }
+            // Videos - Using actual .mov files (may have compatibility issues)
+            { file: "C882D2EE-AAAF-421A-9B25-99FC5C8EB473.mov", type: "video" },
+            { file: "E53B89A5-F42E-405E-9278-7EDE83946CC7.mov", type: "video" }
         ];
 
         function checkMediaLoaded() {
@@ -407,17 +406,40 @@
                 } else if (media.type === 'video') {
                     const video = document.createElement('video');
                     // Path works for both local and GitHub Pages (relative path)
-                    video.src = `media/${media.file}`;
                     video.muted = true;
                     video.loop = false;
                     video.preload = 'metadata';
                     video.setAttribute('playsinline', 'true');
                     video.setAttribute('webkit-playsinline', 'true');
+                    video.controls = false;
+                    
+                    // Add multiple source formats for better compatibility
+                    const source = document.createElement('source');
+                    source.src = `media/${media.file}`;
+                    source.type = media.file.endsWith('.mov') ? 'video/quicktime' : 'video/mp4';
+                    video.appendChild(source);
                     
                     video.onloadedmetadata = checkMediaLoaded;
                     video.onerror = function() {
-                        console.log(`Could not load video: ${media.file} - May need compression`);
+                        console.log(`Could not load video: ${media.file} - Browser may not support .mov format`);
+                        // Create a placeholder for failed video
+                        const placeholder = document.createElement('div');
+                        placeholder.style.cssText = `
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            background: #333;
+                            color: white;
+                            font-size: 1.5rem;
+                            border-radius: 12px;
+                            width: 80%;
+                            height: 60%;
+                            margin: auto;
+                        `;
+                        placeholder.textContent = `Video: ${media.file.split('.')[0].substring(0,20)}...`;
+                        slideDiv.appendChild(placeholder);
                         checkMediaLoaded();
+                        return;
                     };
                     
                     slideDiv.appendChild(video);
