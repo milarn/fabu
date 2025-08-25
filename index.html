@@ -297,10 +297,11 @@
 </head>
 <body>
     <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
+    <div class="loading-screen" id="loadingScreen" onclick="forceStartSlideshow()" style="cursor: pointer;">
         <h1>99'ere på fabu</h1>
         <p>Laster minner...</p>
         <div class="loader"></div>
+        <p style="font-size: 0.9rem; opacity: 0.6; margin-top: 2rem;">Click to skip loading</p>
     </div>
 
     <div class="slideshow-container">
@@ -371,6 +372,8 @@
 
         function checkMediaLoaded() {
             mediaLoaded++;
+            console.log(`Media loaded: ${mediaLoaded}/${totalMedia}`);
+            
             if (mediaLoaded >= totalMedia) {
                 setTimeout(() => {
                     document.getElementById('loadingScreen').classList.add('hidden');
@@ -378,6 +381,15 @@
                         startAutoPlay();
                     }
                 }, 1000);
+            }
+        }
+
+        // Fallback function to force loading screen to disappear
+        function forceStartSlideshow() {
+            console.log('Force starting slideshow - some media may have failed to load');
+            document.getElementById('loadingScreen').classList.add('hidden');
+            if (isAutoPlaying) {
+                startAutoPlay();
             }
         }
 
@@ -399,7 +411,7 @@
                     img.onload = checkMediaLoaded;
                     img.onerror = function() {
                         console.log(`Could not load image: ${media.file}`);
-                        checkMediaLoaded();
+                        checkMediaLoaded(); // Still count as "loaded" so we don't hang
                     };
                     
                     slideDiv.appendChild(img);
@@ -408,38 +420,73 @@
                     // Path works for both local and GitHub Pages (relative path)
                     video.muted = true;
                     video.loop = false;
-                    video.preload = 'metadata';
+                    video.preload = 'auto';
                     video.setAttribute('playsinline', 'true');
                     video.setAttribute('webkit-playsinline', 'true');
                     video.controls = false;
+                    video.style.maxWidth = '96%';
+                    video.style.maxHeight = '96%';
+                    video.style.objectFit = 'contain';
                     
-                    // Add multiple source formats for better compatibility
-                    const source = document.createElement('source');
-                    source.src = `media/${media.file}`;
-                    source.type = media.file.endsWith('.mov') ? 'video/quicktime' : 'video/mp4';
-                    video.appendChild(source);
+                    // Try direct src first (works better than source element sometimes)
+                    video.src = `media/${media.file}`;
                     
-                    video.onloadedmetadata = checkMediaLoaded;
-                    video.onerror = function() {
-                        console.log(`Could not load video: ${media.file} - Browser may not support .mov format`);
-                        // Create a placeholder for failed video
+                    video.onloadeddata = function() {
+                        console.log(`✅ Video loaded successfully: ${media.file}`);
+                        checkMediaLoaded();
+                    };
+                    
+                    video.oncanplay = function() {
+                        console.log(`🎬 Video ready to play: ${media.file}`);
+                    };
+                    
+                    video.onerror = function(e) {
+                        console.log(`❌ Video error for ${media.file}:`, e);
+                        console.log('Error details:', video.error);
+                        
+                        // Create a visible placeholder
                         const placeholder = document.createElement('div');
                         placeholder.style.cssText = `
                             display: flex;
+                            flex-direction: column;
                             align-items: center;
                             justify-content: center;
-                            background: #333;
+                            background: linear-gradient(45deg, #333, #555);
                             color: white;
-                            font-size: 1.5rem;
+                            font-size: 1.2rem;
                             border-radius: 12px;
                             width: 80%;
                             height: 60%;
                             margin: auto;
+                            text-align: center;
+                            padding: 2rem;
+                            border: 2px dashed #666;
                         `;
-                        placeholder.textContent = `Video: ${media.file.split('.')[0].substring(0,20)}...`;
+                        
+                        const title = document.createElement('div');
+                        title.textContent = '🎬 Video ikke tilgjengelig';
+                        title.style.fontSize = '1.5rem';
+                        title.style.marginBottom = '1rem';
+                        
+                        const filename = document.createElement('div');
+                        filename.textContent = media.file.split('.')[0].substring(0,30) + '...';
+                        filename.style.fontSize = '0.9rem';
+                        filename.style.opacity = '0.7';
+                        filename.style.marginBottom = '1rem';
+                        
+                        const reason = document.createElement('div');
+                        reason.textContent = 'Kan ikke spille .mov filer i denne nettleseren';
+                        reason.style.fontSize = '0.8rem';
+                        reason.style.opacity = '0.6';
+                        
+                        placeholder.appendChild(title);
+                        placeholder.appendChild(filename);
+                        placeholder.appendChild(reason);
+                        
+                        // Remove the broken video element and add placeholder
+                        video.remove();
                         slideDiv.appendChild(placeholder);
                         checkMediaLoaded();
-                        return;
                     };
                     
                     slideDiv.appendChild(video);
@@ -583,9 +630,20 @@
 
         // Initialize
         window.addEventListener('load', function() {
+            console.log('Starting slideshow initialization...');
             loadSlides();
             showSlide(0);
             
+            // Give media 3 seconds to load, then force start
+            setTimeout(() => {
+                console.log(`Checking load status: ${mediaLoaded}/${totalMedia} loaded`);
+                if (mediaLoaded < totalMedia) {
+                    console.log('Some media failed to load, starting anyway...');
+                    forceStartSlideshow();
+                }
+            }, 3000);
+            
+            // Original load completion check
             setTimeout(() => {
                 if (mediaLoaded >= totalMedia) {
                     document.getElementById('loadingScreen').classList.add('hidden');
