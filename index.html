@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="99'ere på fabu - Klasseminne fra videregående skole">
+    <meta name="description" content="99'ere på fabu - Klasseminne fra ungdomsskolen">
     <meta name="keywords" content="99ere, fabu, klasseminne, skole, reunion">
     <meta name="author" content="Klasse 99'erne">
     
@@ -417,7 +417,6 @@
                     slideDiv.appendChild(img);
                 } else if (media.type === 'video') {
                     const video = document.createElement('video');
-                    // Path works for both local and GitHub Pages (relative path)
                     video.muted = true;
                     video.loop = false;
                     video.preload = 'auto';
@@ -428,57 +427,91 @@
                     video.style.maxHeight = '96%';
                     video.style.objectFit = 'contain';
                     
-                    // Try direct src first (works better than source element sometimes)
+                    // Don't use crossOrigin for local files - causes CORS issues
+                    // video.crossOrigin = 'anonymous';
+                    
+                    // Try to load the video with better error handling
                     video.src = `media/${media.file}`;
                     
+                    // Add a loading timeout (longer for local files)
+                    const loadTimeout = setTimeout(() => {
+                        console.log(`⏰ Video loading timeout: ${media.file}`);
+                        if (video.readyState < 2) {
+                            video.onerror({ type: 'timeout' });
+                        }
+                    }, 8000); // 8 seconds for local files
+                    
                     video.onloadeddata = function() {
-                        console.log(`✅ Video loaded successfully: ${media.file}`);
+                        clearTimeout(loadTimeout);
+                        console.log(`✅ Video loaded successfully: ${media.file} (readyState: ${video.readyState})`);
                         checkMediaLoaded();
                     };
                     
-                    video.oncanplay = function() {
-                        console.log(`🎬 Video ready to play: ${media.file}`);
+                    video.oncanplaythrough = function() {
+                        clearTimeout(loadTimeout);
+                        console.log(`🎬 Video fully ready: ${media.file}`);
                     };
                     
                     video.onerror = function(e) {
-                        console.log(`❌ Video error for ${media.file}:`, e);
-                        console.log('Error details:', video.error);
+                        clearTimeout(loadTimeout);
+                        console.log(`❌ Video error for ${media.file}:`);
+                        console.log('- Error type:', e.type || 'unknown');
+                        console.log('- Video error code:', video.error?.code);
+                        console.log('- Video error message:', video.error?.message);
+                        console.log('- Ready state:', video.readyState);
+                        console.log('- Network state:', video.networkState);
+                        console.log('- Current location:', window.location.href);
                         
-                        // Create a visible placeholder
+                        // Detect if we're running locally or on server
+                        const isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                        
+                        // Create a nice placeholder with appropriate message
                         const placeholder = document.createElement('div');
                         placeholder.style.cssText = `
                             display: flex;
                             flex-direction: column;
                             align-items: center;
                             justify-content: center;
-                            background: linear-gradient(45deg, #333, #555);
+                            background: linear-gradient(45deg, #1a1a2e, #16213e);
                             color: white;
-                            font-size: 1.2rem;
+                            font-size: 1rem;
                             border-radius: 12px;
                             width: 80%;
                             height: 60%;
                             margin: auto;
                             text-align: center;
                             padding: 2rem;
-                            border: 2px dashed #666;
+                            border: 2px dashed #4a90e2;
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
                         `;
                         
+                        const icon = document.createElement('div');
+                        icon.textContent = '🎬';
+                        icon.style.fontSize = '3rem';
+                        icon.style.marginBottom = '1rem';
+                        
                         const title = document.createElement('div');
-                        title.textContent = '🎬 Video ikke tilgjengelig';
-                        title.style.fontSize = '1.5rem';
+                        title.textContent = isLocal ? 'Video ikke funnet lokalt' : 'Video ikke tilgjengelig på server';
+                        title.style.fontSize = '1.3rem';
+                        title.style.fontWeight = 'bold';
                         title.style.marginBottom = '1rem';
                         
                         const filename = document.createElement('div');
-                        filename.textContent = media.file.split('.')[0].substring(0,30) + '...';
+                        filename.textContent = media.file.substring(0,35) + (media.file.length > 35 ? '...' : '');
                         filename.style.fontSize = '0.9rem';
-                        filename.style.opacity = '0.7';
+                        filename.style.opacity = '0.8';
                         filename.style.marginBottom = '1rem';
+                        filename.style.fontFamily = 'monospace';
                         
                         const reason = document.createElement('div');
-                        reason.textContent = 'Kan ikke spille .mov filer i denne nettleseren';
-                        reason.style.fontSize = '0.8rem';
-                        reason.style.opacity = '0.6';
+                        reason.innerHTML = isLocal 
+                            ? 'Sjekk at videofilen er i media/ mappen<br><small>Eller at filnavnet stemmer</small>'
+                            : 'GitHub Pages serverer ikke .mov filer riktig<br><small>Fungerer lokalt, men ikke på web server</small>';
+                        reason.style.fontSize = '0.85rem';
+                        reason.style.opacity = '0.7';
+                        reason.style.lineHeight = '1.4';
                         
+                        placeholder.appendChild(icon);
                         placeholder.appendChild(title);
                         placeholder.appendChild(filename);
                         placeholder.appendChild(reason);

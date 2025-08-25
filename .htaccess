@@ -1,0 +1,29 @@
+# 99'ere på fabu - GitHub Pages Video Configuration
+# Force proper MIME types for .mov files
+
+# Set MIME types for video files
+AddType video/quicktime .mov
+AddType video/mp4 .mp4
+AddType video/webm .webm
+
+# Force content type headers for video files
+<Files "*.mov">
+    ForceType video/quicktime
+</Files>
+
+<Files "*.mp4">
+    ForceType video/mp4
+</Files>
+
+# Remove content type sniffing for videos
+<FilesMatch "\.(mov|mp4|webm)$">
+    Header unset X-Content-Type-Options
+    Header set Content-Type "video/quicktime"
+</FilesMatch>
+
+# Enable caching for video files
+<IfModule mod_expires.c>
+    ExpiresActive on
+    ExpiresByType video/mp4 "access plus 1 month"
+    ExpiresByType video/quicktime "access plus 1 month"
+</IfModule>
