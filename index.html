@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="99'ere på fabu - Klasseminne fra ungdomsskolen">
+    <meta name="description" content="99'ere på fabu - Klasseminne fra videregående skole">
     <meta name="keywords" content="99ere, fabu, klasseminne, skole, reunion">
     <meta name="author" content="Klasse 99'erne">
     
@@ -136,18 +136,6 @@
             font-weight: 300;
         }
 
-        .github-link {
-            position: absolute;
-            bottom: 30px;
-            font-size: 1rem;
-            opacity: 0.7;
-        }
-
-        .github-link a {
-            color: white;
-            text-decoration: none;
-        }
-
         .progress-bar {
             position: fixed;
             bottom: 0;
@@ -262,11 +250,6 @@
                 font-size: 1.4rem;
             }
             
-            .github-link {
-                bottom: 15px;
-                font-size: 0.9rem;
-            }
-            
             .loading-screen h1 {
                 font-size: 2rem;
             }
@@ -313,9 +296,6 @@
         <div class="slide active title-slide">
             <h1>99'ere på fabu</h1>
             <p>Memories</p>
-            <div class="github-link">
-                <a href="https://github.com/your-username/skole-milarn-dev" target="_blank">View on GitHub</a>
-            </div>
         </div>
 
         <!-- Media content will be loaded here -->
@@ -338,9 +318,9 @@
         let mediaLoaded = 0;
         let totalMedia = 0;
 
-        // GitHub Pages optimized media list - smaller files only
+        // ALL YOUR MEDIA FILES - Complete list with everything you added!
         const mediaFiles = [
-            // Images (these should be under 25MB each for GitHub)
+            // Original images
             { file: "464241986_9321324077894213_7019172700282121209_n.png", type: "image" },
             { file: "464342585_9321327044560583_8533568968669380393_n.png", type: "image" },
             { file: "464362187_9321322881227666_5673559254858679393_n.png", type: "image" },
@@ -364,13 +344,33 @@
             { file: "att.z0NKM1bazyy-60eg7Ii9Gor-7T8t1Iav6ZbKNyNHMZ8.jpg", type: "image" },
             { file: "image.png", type: "image" },
             { file: "IMG_4103.jpg", type: "image" },
+            
+            // New images you added
+            { file: "1233.jpg", type: "image" },
+            { file: "472005618_10170216913615386_4712834509278678856_n.png", type: "image" },
+            { file: "495910777_4161515940746811_6215697818317718332_n.png", type: "image" },
+            { file: "496153333_2961355860708937_7702608149536201281_n.png", type: "image" },
+            { file: "505703157_3556931634439231_8099013058028798458_n.png", type: "image" },
+            { file: "505829196_3557179931081068_2461825453438992905_n.png", type: "image" },
+            { file: "505831489_3557179927747735_3810782334392951748_n.png", type: "image" },
+            { file: "506037067_3557179917747736_5095842677070717139_n.png", type: "image" },
+            { file: "506105309_3557179924414402_3622397745210495039_n.png", type: "image" },
+            { file: "506147325_3557179974414397_6957229730996193007_n.png", type: "image" },
+            { file: "510419201_9992911270756432_8118692439380657068_n.png", type: "image" },
+            { file: "510973035_9992911214089771_8367673511870000223_n.png", type: "image" },
+            { file: "512603149_9992911227423103_3745146947530771064_n.png", type: "image" },
+            { file: "image.jpg", type: "image" },
+            { file: "image11.jpg", type: "image" },
             { file: "IMG_4107.jpg", type: "image" },
             { file: "IMG_4108.jpg", type: "image" },
             { file: "IMG_4109.jpg", type: "image" },
+            { file: "IMG_4119.jpg", type: "image" },
+            { file: "lund.jpg", type: "image" },
             
-            // Videos - Now using .mp4 format for better compatibility
-            { file: "E53B89A5-F42E-405E-9278-7EDE83946CC7.mp4", type: "video" },
-            { file: "C882D2EE-AAAF-421A-9B25-99FC5C8EB473.mp4", type: "video" } // Keep as .mov until converted
+            
+            // Videos - Both now in .mp4 format for universal compatibility!
+            { file: "C882D2EE-AAAF-421A-9B25-99FC5C8EB473.mp4", type: "video" },
+            { file: "E53B89A5-F42E-405E-9278-7EDE83946CC7.mp4", type: "video" }
         ];
 
         function checkMediaLoaded() {
@@ -406,7 +406,6 @@
                 
                 if (media.type === 'image') {
                     const img = document.createElement('img');
-                    // Path works for both local and GitHub Pages (relative path)
                     img.src = `media/${media.file}`;
                     img.alt = `99ere på fabu - Minne ${index + 1}`;
                     img.loading = 'lazy';
@@ -430,45 +429,36 @@
                     video.style.maxHeight = '96%';
                     video.style.objectFit = 'contain';
                     
-                    // Don't use crossOrigin for local files - causes CORS issues
-                    // video.crossOrigin = 'anonymous';
-                    
-                    // Try to load the video with better error handling
                     video.src = `media/${media.file}`;
                     
-                    // Add a loading timeout (longer for local files)
                     const loadTimeout = setTimeout(() => {
-                        console.log(`⏰ Video loading timeout: ${media.file}`);
+                        console.log(`Video loading timeout: ${media.file}`);
                         if (video.readyState < 2) {
                             video.onerror({ type: 'timeout' });
                         }
-                    }, 8000); // 8 seconds for local files
+                    }, 8000);
                     
                     video.onloadeddata = function() {
                         clearTimeout(loadTimeout);
-                        console.log(`✅ Video loaded successfully: ${media.file} (readyState: ${video.readyState})`);
+                        console.log(`Video loaded successfully: ${media.file} (readyState: ${video.readyState})`);
                         checkMediaLoaded();
                     };
                     
                     video.oncanplaythrough = function() {
                         clearTimeout(loadTimeout);
-                        console.log(`🎬 Video fully ready: ${media.file}`);
+                        console.log(`Video fully ready: ${media.file}`);
                     };
                     
                     video.onerror = function(e) {
                         clearTimeout(loadTimeout);
-                        console.log(`❌ Video error for ${media.file}:`);
+                        console.log(`Video error for ${media.file}:`);
                         console.log('- Error type:', e.type || 'unknown');
                         console.log('- Video error code:', video.error?.code);
-                        console.log('- Video error message:', video.error?.message);
                         console.log('- Ready state:', video.readyState);
-                        console.log('- Network state:', video.networkState);
                         console.log('- Current location:', window.location.href);
                         
-                        // Detect if we're running locally or on server
                         const isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
                         
-                        // Create a nice placeholder with appropriate message
                         const placeholder = document.createElement('div');
                         placeholder.style.cssText = `
                             display: flex;
@@ -519,7 +509,6 @@
                         placeholder.appendChild(filename);
                         placeholder.appendChild(reason);
                         
-                        // Remove the broken video element and add placeholder
                         video.remove();
                         slideDiv.appendChild(placeholder);
                         checkMediaLoaded();
@@ -575,7 +564,7 @@
             currentSlide = (currentSlide + 1) % totalSlides;
             showSlide(currentSlide);
             if (isAutoPlaying) {
-                startAutoPlay(); // Restart timing for new slide
+                startAutoPlay();
             }
         }
 
@@ -583,7 +572,7 @@
             currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
             showSlide(currentSlide);
             if (isAutoPlaying) {
-                startAutoPlay(); // Restart timing for new slide
+                startAutoPlay();
             }
         }
 
@@ -593,7 +582,7 @@
             
             if (isAutoPlaying) {
                 clearInterval(autoPlayInterval);
-                clearTimeout(autoPlayInterval); // Clear both interval and timeout
+                clearTimeout(autoPlayInterval);
                 btn.textContent = '▶ Play';
                 isAutoPlaying = false;
                 indicator.style.display = 'none';
@@ -607,14 +596,12 @@
 
         function startAutoPlay() {
             clearInterval(autoPlayInterval);
-            clearTimeout(autoPlayInterval); // Clear both interval and timeout
+            clearTimeout(autoPlayInterval);
             
-            // Check if current slide has video
             const currentSlideElement = slides[currentSlide];
             const video = currentSlideElement ? currentSlideElement.querySelector('video') : null;
             
             if (video && !video.ended) {
-                // For video slides, wait until video ends
                 video.addEventListener('ended', function() {
                     setTimeout(() => {
                         if (isAutoPlaying) {
@@ -623,12 +610,11 @@
                     }, 1000);
                 }, { once: true });
             } else {
-                // For image slides, use timer
                 autoPlayInterval = setTimeout(() => {
                     if (isAutoPlaying) {
                         nextSlide();
                     }
-                }, 5000); // 5 seconds for images
+                }, 5000);
             }
         }
 
@@ -670,7 +656,6 @@
             loadSlides();
             showSlide(0);
             
-            // Give media 3 seconds to load, then force start
             setTimeout(() => {
                 console.log(`Checking load status: ${mediaLoaded}/${totalMedia} loaded`);
                 if (mediaLoaded < totalMedia) {
@@ -679,7 +664,6 @@
                 }
             }, 3000);
             
-            // Original load completion check
             setTimeout(() => {
                 if (mediaLoaded >= totalMedia) {
                     document.getElementById('loadingScreen').classList.add('hidden');
@@ -690,7 +674,6 @@
             }, 2000);
         });
 
-        // Prevent context menu on images/videos
         document.addEventListener('contextmenu', e => {
             if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') {
                 e.preventDefault();
