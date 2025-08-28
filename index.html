@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="99'ere på fabu - Klasseminne fra videregående skole">
+    <meta name="description" content="99'ere på fabu - Klasseminne slideshow">
     <meta name="keywords" content="99ere, fabu, klasseminne, skole, reunion">
     <meta name="author" content="Klasse 99'erne">
     
@@ -60,6 +60,22 @@
             margin-bottom: 2rem;
         }
 
+        .loading-progress {
+            width: 300px;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .loading-bar {
+            height: 100%;
+            background: white;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
         .loader {
             width: 50px;
             height: 50px;
@@ -109,6 +125,18 @@
             box-shadow: 0 25px 80px rgba(0,0,0,0.6);
         }
 
+        /* Ken Burns effect for photos */
+        .slide img.ken-burns {
+            animation: kenBurns 8s ease-in-out;
+            transform-origin: center;
+        }
+
+        @keyframes kenBurns {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.1) translate(-2%, -1%); }
+            100% { transform: scale(1) translate(0, 0); }
+        }
+
         .slide video {
             outline: none;
         }
@@ -136,6 +164,14 @@
             font-weight: 300;
         }
 
+        .stats-display {
+            position: absolute;
+            bottom: 80px;
+            font-size: 1rem;
+            opacity: 0.7;
+            text-align: center;
+        }
+
         .progress-bar {
             position: fixed;
             bottom: 0;
@@ -161,6 +197,25 @@
             font-weight: 300;
         }
 
+        .speed-control {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: none;
+        }
+
+        .speed-control.visible {
+            display: block;
+        }
+
         .controls {
             position: fixed;
             bottom: 40px;
@@ -181,14 +236,15 @@
             background: rgba(255,255,255,0.15);
             border: 1px solid rgba(255,255,255,0.2);
             color: white;
-            padding: 12px 24px;
-            border-radius: 30px;
+            padding: 12px 20px;
+            border-radius: 25px;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
             backdrop-filter: blur(15px);
             font-weight: 300;
             user-select: none;
+            white-space: nowrap;
         }
 
         .btn:hover {
@@ -199,6 +255,11 @@
 
         .btn:active {
             transform: translateY(0px);
+        }
+
+        .btn.active {
+            background: rgba(102, 126, 234, 0.4);
+            border-color: #667eea;
         }
 
         .auto-indicator {
@@ -213,6 +274,55 @@
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255,255,255,0.1);
             font-weight: 300;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .auto-indicator.shuffle {
+            background: rgba(255, 165, 0, 0.7);
+        }
+
+        .help-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            z-index: 20000;
+            display: none;
+            max-width: 500px;
+            text-align: left;
+        }
+
+        .help-panel.visible {
+            display: block;
+        }
+
+        .help-panel h3 {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .help-panel .shortcuts {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px 20px;
+            align-items: center;
+        }
+
+        .help-panel .key {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-weight: bold;
         }
 
         @keyframes slideIn {
@@ -230,34 +340,42 @@
             animation: slideIn 1.5s ease-out;
         }
 
+        /* Fade transition effect */
+        .slide.fade-transition {
+            transition: opacity 2s ease-in-out;
+        }
+
         /* Mobile optimizations */
         @media (max-width: 768px) {
             .controls {
                 bottom: 20px;
-                gap: 10px;
+                gap: 8px;
+                flex-wrap: wrap;
+                justify-content: center;
+                max-width: 90%;
             }
             
             .btn {
-                padding: 10px 18px;
-                font-size: 0.9rem;
+                padding: 8px 12px;
+                font-size: 0.8rem;
             }
             
             .title-slide h1 {
-                font-size: 3rem;
+                font-size: 2.5rem;
             }
             
             .title-slide p {
-                font-size: 1.4rem;
+                font-size: 1.2rem;
             }
             
             .loading-screen h1 {
                 font-size: 2rem;
             }
             
-            .slide-counter, .auto-indicator {
+            .slide-counter, .auto-indicator, .speed-control {
                 top: 15px;
-                padding: 8px 14px;
-                font-size: 0.9rem;
+                padding: 6px 12px;
+                font-size: 0.8rem;
             }
             
             .slide-counter {
@@ -267,13 +385,10 @@
             .auto-indicator {
                 left: 15px;
             }
-        }
 
-        /* Ultra-wide screen optimizations */
-        @media (min-width: 1920px) {
-            .slide img, .slide video {
+            .help-panel {
                 max-width: 90%;
-                max-height: 90%;
+                padding: 20px;
             }
         }
     </style>
@@ -282,20 +397,47 @@
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen" onclick="forceStartSlideshow()" style="cursor: pointer;">
         <h1>99'ere på fabu</h1>
-        <p>Laster minner...</p>
+        <p id="loadingText">Blander minner...</p>
+        <div class="loading-progress">
+            <div class="loading-bar" id="loadingBar"></div>
+        </div>
         <div class="loader"></div>
         <p style="font-size: 0.9rem; opacity: 0.6; margin-top: 2rem;">Click to skip loading</p>
+    </div>
+
+    <!-- Help Panel -->
+    <div class="help-panel" id="helpPanel">
+        <h3>Keyboard Shortcuts</h3>
+        <div class="shortcuts">
+            <span class="key">←/→</span><span>Navigate slides</span>
+            <span class="key">Space</span><span>Play/Pause slideshow</span>
+            <span class="key">F</span><span>Fullscreen toggle</span>
+            <span class="key">S</span><span>Shuffle/Reshuffle</span>
+            <span class="key">1-5</span><span>Speed control (1=slow, 5=fast)</span>
+            <span class="key">K</span><span>Ken Burns effect on/off</span>
+            <span class="key">H</span><span>Show/Hide this help</span>
+            <span class="key">R</span><span>Restart slideshow</span>
+            <span class="key">Esc</span><span>Close help</span>
+        </div>
+        <p style="text-align: center; margin-top: 20px; opacity: 0.7;">Press H or Esc to close</p>
     </div>
 
     <div class="slideshow-container">
         <div class="progress-bar" id="progressBar"></div>
         <div class="slide-counter" id="slideCounter"></div>
-        <div class="auto-indicator">Auto Playing</div>
+        <div class="speed-control" id="speedControl">Speed: Normal</div>
+        <div class="auto-indicator" id="autoIndicator">
+            <span id="autoIcon">▶</span>
+            <span id="autoText">Auto Playing</span>
+        </div>
         
         <!-- Title Slide -->
         <div class="slide active title-slide">
             <h1>99'ere på fabu</h1>
-            <p>Memories</p>
+            <p>Random Memory Journey</p>
+            <div class="stats-display" id="statsDisplay">
+                Loading memories...
+            </div>
         </div>
 
         <!-- Media content will be loaded here -->
@@ -306,6 +448,10 @@
         <button class="btn" onclick="previousSlide()">◀ Forrige</button>
         <button class="btn" onclick="toggleAutoPlay()" id="autoPlayBtn">⏸ Pause</button>
         <button class="btn" onclick="nextSlide()">Neste ▶</button>
+        <button class="btn" onclick="shuffleSlides()">🔀 Shuffle</button>
+        <button class="btn" onclick="toggleKenBurns()" id="kenBurnsBtn">📷 Ken Burns</button>
+        <button class="btn" onclick="toggleHelp()">❓ Help</button>
+        <button class="btn" onclick="restartSlideshow()">🔄 Restart</button>
     </div>
 
     <script>
@@ -317,21 +463,37 @@
         let currentVideo = null;
         let mediaLoaded = 0;
         let totalMedia = 0;
+        let kenBurnsEnabled = true;
+        let slideSpeed = 4000; // milliseconds
+        let shuffled = false;
+        let loadStartTime = Date.now();
 
-        // ALL YOUR MEDIA FILES - Complete list with everything you added!
+        // ALL YOUR MEDIA FILES - COMPLETE COLLECTION!
         const mediaFiles = [
             // Original images
             { file: "464241986_9321324077894213_7019172700282121209_n.png", type: "image" },
             { file: "464342585_9321327044560583_8533568968669380393_n.png", type: "image" },
             { file: "464362187_9321322881227666_5673559254858679393_n.png", type: "image" },
             { file: "471651235_10170314867865282_1372000297351800823_n.png", type: "image" },
+            { file: "472005618_10170216913615386_4712834509278678856_n.png", type: "image" },
+            { file: "495910777_4161515940746811_6215697818317718332_n.png", type: "image" },
+            { file: "496153333_2961355860708937_7702608149536201281_n.png", type: "image" },
             { file: "496837702_4161154130782992_6845664785709925727_n.png", type: "image" },
             { file: "497517388_4161517204080018_4521617861178797787_n.png", type: "image" },
             { file: "502901355_3543999109065817_1138002968439496910_n.png", type: "image" },
             { file: "504648559_9896069360440624_4939442688779220698_n.png", type: "image" },
+            { file: "505703157_3556931634439231_8099013058028798458_n.png", type: "image" },
+            { file: "505829196_3557179931081068_2461825453438992905_n.png", type: "image" },
+            { file: "505831489_3557179927747735_3810782334392951748_n.png", type: "image" },
+            { file: "506037067_3557179917747736_5095842677070717139_n.png", type: "image" },
+            { file: "506105309_3557179924414402_3622397745210495039_n.png", type: "image" },
             { file: "506105312_3557179977747730_7444029331057502389_n.png", type: "image" },
+            { file: "506147325_3557179974414397_6957229730996193007_n.png", type: "image" },
             { file: "508760934_23989996623989960_4634035709597014169_n.png", type: "image" },
             { file: "509002548_23989996410656648_3110325533445474620_n.png", type: "image" },
+            { file: "510419201_9992911270756432_8118692439380657068_n.png", type: "image" },
+            { file: "510973035_9992911214089771_8367673511870000223_n.png", type: "image" },
+            { file: "512603149_9992911227423103_3745146947530771064_n.png", type: "image" },
             { file: "att.0EbDH5CE53ZtQl1xhgJ5w1IVseIbwqvMWWq7OAu0D80.jpg", type: "image" },
             { file: "att.9DHdikMT4BHVy--oZrS6nVNpoVMAWZH2qskaD8GP48o.jpg", type: "image" },
             { file: "att.bnzDkBE4GL_1lpq7WTrc-cpMC6yEWjV2YAj7eQe50FE.jpg", type: "image" },
@@ -343,43 +505,73 @@
             { file: "att.vx6wTt-6_zUrrF3okaukxjggQmkdVLeKD3KpI5cahHg.jpg", type: "image" },
             { file: "att.z0NKM1bazyy-60eg7Ii9Gor-7T8t1Iav6ZbKNyNHMZ8.jpg", type: "image" },
             { file: "image.png", type: "image" },
-            { file: "IMG_4103.jpg", type: "image" },
-            
-            // New images you added
-            { file: "1233.jpg", type: "image" },
-            { file: "472005618_10170216913615386_4712834509278678856_n.png", type: "image" },
-            { file: "495910777_4161515940746811_6215697818317718332_n.png", type: "image" },
-            { file: "496153333_2961355860708937_7702608149536201281_n.png", type: "image" },
-            { file: "505703157_3556931634439231_8099013058028798458_n.png", type: "image" },
-            { file: "505829196_3557179931081068_2461825453438992905_n.png", type: "image" },
-            { file: "505831489_3557179927747735_3810782334392951748_n.png", type: "image" },
-            { file: "506037067_3557179917747736_5095842677070717139_n.png", type: "image" },
-            { file: "506105309_3557179924414402_3622397745210495039_n.png", type: "image" },
-            { file: "506147325_3557179974414397_6957229730996193007_n.png", type: "image" },
-            { file: "510419201_9992911270756432_8118692439380657068_n.png", type: "image" },
-            { file: "510973035_9992911214089771_8367673511870000223_n.png", type: "image" },
-            { file: "512603149_9992911227423103_3745146947530771064_n.png", type: "image" },
             { file: "image.jpg", type: "image" },
             { file: "image11.jpg", type: "image" },
+            { file: "IMG_4103.jpg", type: "image" },
             { file: "IMG_4107.jpg", type: "image" },
             { file: "IMG_4108.jpg", type: "image" },
             { file: "IMG_4109.jpg", type: "image" },
             { file: "IMG_4119.jpg", type: "image" },
+
+            // New images you added
+            { file: "1233.jpg", type: "image" },
+            { file: "30de68fe-5c42-42fc-b84a-2d4b2f6354de.jpg", type: "image" },
+            { file: "322e5372-e7cf-4b6f-b85d-c0cbe362bc3b.jpg", type: "image" },
+            { file: "4ddbec0d-634a-4609-b261-2a86cef6384a.jpg", type: "image" },
+            { file: "580cdf63-c21f-42ce-a299-7b5f6468db20.jpg", type: "image" },
+            { file: "a2e89556-b992-4123-89bd-134a9b043d66.jpg", type: "image" },
+            { file: "e08e3741-3ba7-4abd-ba68-d917d832e43a.jpg", type: "image" },
+            { file: "f7c9dd27-b7e2-48cf-8771-2fe2c684ef6f.jpg", type: "image" },
+            { file: "klassebildegruppe.jpg", type: "image" },
+            { file: "klassebildegruppesassy.jpg", type: "image" },
             { file: "lund.jpg", type: "image" },
+            { file: "phill.jpg", type: "image" },
+            { file: "ski.jpg", type: "image" },
             
-            
-            // Videos - Both now in .mp4 format for universal compatibility!
+            // All videos - mixed throughout!
             { file: "C882D2EE-AAAF-421A-9B25-99FC5C8EB473.mp4", type: "video" },
-            { file: "E53B89A5-F42E-405E-9278-7EDE83946CC7.mp4", type: "video" }
+            { file: "E53B89A5-F42E-405E-9278-7EDE83946CC7.mp4", type: "video" },
+            { file: "fredklassikkk.mp4", type: "video" },
+            { file: "gardigir.mp4", type: "video" },
+            { file: "gerdibevegelse.mp4", type: "video" },
+            { file: "skotty.mp4", type: "video" },
+            { file: "slede.mp4", type: "video" },
+            { file: "vollyball.mp4", type: "video" },
+            { file: "wtdahelly.mp4", type: "video" }
         ];
+
+        // Shuffle algorithm (Fisher-Yates)
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function updateLoadingProgress() {
+            const progress = Math.min((mediaLoaded / totalMedia) * 100, 100);
+            document.getElementById('loadingBar').style.width = progress + '%';
+            
+            if (progress < 100) {
+                document.getElementById('loadingText').textContent = `Loading ${mediaLoaded}/${totalMedia} memories...`;
+            } else {
+                document.getElementById('loadingText').textContent = 'Almost ready...';
+            }
+        }
 
         function checkMediaLoaded() {
             mediaLoaded++;
-            console.log(`Media loaded: ${mediaLoaded}/${totalMedia}`);
+            updateLoadingProgress();
             
             if (mediaLoaded >= totalMedia) {
+                const loadTime = ((Date.now() - loadStartTime) / 1000).toFixed(1);
+                document.getElementById('loadingText').textContent = `Ready! Loaded ${totalMedia} memories in ${loadTime}s`;
+                
                 setTimeout(() => {
                     document.getElementById('loadingScreen').classList.add('hidden');
+                    updateStats();
                     if (isAutoPlaying) {
                         startAutoPlay();
                     }
@@ -387,33 +579,51 @@
             }
         }
 
-        // Fallback function to force loading screen to disappear
         function forceStartSlideshow() {
-            console.log('Force starting slideshow - some media may have failed to load');
+            console.log('Force starting slideshow');
             document.getElementById('loadingScreen').classList.add('hidden');
+            updateStats();
             if (isAutoPlaying) {
                 startAutoPlay();
             }
         }
 
+        function updateStats() {
+            const imageCount = mediaFiles.filter(m => m.type === 'image').length;
+            const videoCount = mediaFiles.filter(m => m.type === 'video').length;
+            document.getElementById('statsDisplay').innerHTML = 
+                `${imageCount} Photos • ${videoCount} Videos • ${shuffled ? 'Shuffled' : 'Original Order'}`;
+        }
+
         function loadSlides() {
             const container = document.getElementById('slidesContainer');
-            totalMedia = mediaFiles.length;
             
-            mediaFiles.forEach((media, index) => {
+            // Shuffle media for random order
+            const shuffledMedia = shuffleArray(mediaFiles);
+            shuffled = true;
+            totalMedia = shuffledMedia.length;
+            
+            shuffledMedia.forEach((media, index) => {
                 const slideDiv = document.createElement('div');
                 slideDiv.className = 'slide';
+                slideDiv.dataset.mediaType = media.type;
+                slideDiv.dataset.fileName = media.file;
                 
                 if (media.type === 'image') {
                     const img = document.createElement('img');
                     img.src = `media/${media.file}`;
-                    img.alt = `99ere på fabu - Minne ${index + 1}`;
+                    img.alt = `99ere på fabu - ${media.file}`;
                     img.loading = 'lazy';
+                    
+                    // Add Ken Burns effect by default
+                    if (kenBurnsEnabled) {
+                        img.classList.add('ken-burns');
+                    }
                     
                     img.onload = checkMediaLoaded;
                     img.onerror = function() {
                         console.log(`Could not load image: ${media.file}`);
-                        checkMediaLoaded(); // Still count as "loaded" so we don't hang
+                        checkMediaLoaded();
                     };
                     
                     slideDiv.appendChild(img);
@@ -432,33 +642,23 @@
                     video.src = `media/${media.file}`;
                     
                     const loadTimeout = setTimeout(() => {
-                        console.log(`Video loading timeout: ${media.file}`);
+                        console.log(`Video timeout: ${media.file}`);
                         if (video.readyState < 2) {
-                            video.onerror({ type: 'timeout' });
+                            checkMediaLoaded(); // Count as loaded anyway
                         }
-                    }, 8000);
+                    }, 10000);
                     
                     video.onloadeddata = function() {
                         clearTimeout(loadTimeout);
-                        console.log(`Video loaded successfully: ${media.file} (readyState: ${video.readyState})`);
+                        console.log(`Video loaded: ${media.file}`);
                         checkMediaLoaded();
-                    };
-                    
-                    video.oncanplaythrough = function() {
-                        clearTimeout(loadTimeout);
-                        console.log(`Video fully ready: ${media.file}`);
                     };
                     
                     video.onerror = function(e) {
                         clearTimeout(loadTimeout);
-                        console.log(`Video error for ${media.file}:`);
-                        console.log('- Error type:', e.type || 'unknown');
-                        console.log('- Video error code:', video.error?.code);
-                        console.log('- Ready state:', video.readyState);
-                        console.log('- Current location:', window.location.href);
+                        console.log(`Video error: ${media.file}`);
                         
-                        const isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                        
+                        // Create placeholder for failed videos
                         const placeholder = document.createElement('div');
                         placeholder.style.cssText = `
                             display: flex;
@@ -475,39 +675,12 @@
                             text-align: center;
                             padding: 2rem;
                             border: 2px dashed #4a90e2;
-                            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
                         `;
-                        
-                        const icon = document.createElement('div');
-                        icon.textContent = '🎬';
-                        icon.style.fontSize = '3rem';
-                        icon.style.marginBottom = '1rem';
-                        
-                        const title = document.createElement('div');
-                        title.textContent = isLocal ? 'Video ikke funnet lokalt' : 'Video ikke tilgjengelig på server';
-                        title.style.fontSize = '1.3rem';
-                        title.style.fontWeight = 'bold';
-                        title.style.marginBottom = '1rem';
-                        
-                        const filename = document.createElement('div');
-                        filename.textContent = media.file.substring(0,35) + (media.file.length > 35 ? '...' : '');
-                        filename.style.fontSize = '0.9rem';
-                        filename.style.opacity = '0.8';
-                        filename.style.marginBottom = '1rem';
-                        filename.style.fontFamily = 'monospace';
-                        
-                        const reason = document.createElement('div');
-                        reason.innerHTML = isLocal 
-                            ? 'Sjekk at videofilen er i media/ mappen<br><small>Eller at filnavnet stemmer</small>'
-                            : 'GitHub Pages serverer ikke .mov filer riktig<br><small>Fungerer lokalt, men ikke på web server</small>';
-                        reason.style.fontSize = '0.85rem';
-                        reason.style.opacity = '0.7';
-                        reason.style.lineHeight = '1.4';
-                        
-                        placeholder.appendChild(icon);
-                        placeholder.appendChild(title);
-                        placeholder.appendChild(filename);
-                        placeholder.appendChild(reason);
+                        placeholder.innerHTML = `
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🎬</div>
+                            <div style="font-size: 1.2rem; margin-bottom: 1rem;">Video ikke tilgjengelig</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8; font-family: monospace;">${media.file}</div>
+                        `;
                         
                         video.remove();
                         slideDiv.appendChild(placeholder);
@@ -523,6 +696,7 @@
             slides = document.querySelectorAll('.slide');
             totalSlides = slides.length;
             updateCounter();
+            updateStats();
         }
 
         function updateCounter() {
@@ -542,12 +716,18 @@
             
             slides[index].classList.add('active', 'entering');
             
-            const currentSlideElement = slides[index];
-            const video = currentSlideElement.querySelector('video');
+            // Apply Ken Burns effect to images
+            const img = slides[index].querySelector('img');
+            if (img && kenBurnsEnabled) {
+                img.classList.remove('ken-burns');
+                setTimeout(() => img.classList.add('ken-burns'), 100);
+            }
+            
+            const video = slides[index].querySelector('video');
             if (video) {
                 currentVideo = video;
                 video.currentTime = 0;
-                video.play().catch(e => console.log('Video autoplay failed:', e));
+                video.play().catch(e => console.log('Video autoplay failed'));
             }
             
             const progress = ((index + 1) / totalSlides) * 100;
@@ -578,18 +758,20 @@
 
         function toggleAutoPlay() {
             const btn = document.getElementById('autoPlayBtn');
-            const indicator = document.querySelector('.auto-indicator');
+            const indicator = document.getElementById('autoIndicator');
             
             if (isAutoPlaying) {
                 clearInterval(autoPlayInterval);
                 clearTimeout(autoPlayInterval);
                 btn.textContent = '▶ Play';
+                document.getElementById('autoIcon').textContent = '⏸';
+                document.getElementById('autoText').textContent = 'Paused';
                 isAutoPlaying = false;
-                indicator.style.display = 'none';
             } else {
                 isAutoPlaying = true;
                 btn.textContent = '⏸ Pause';
-                indicator.style.display = 'block';
+                document.getElementById('autoIcon').textContent = '▶';
+                document.getElementById('autoText').textContent = 'Auto Playing';
                 startAutoPlay();
             }
         }
@@ -614,25 +796,100 @@
                     if (isAutoPlaying) {
                         nextSlide();
                     }
-                }, 5000);
+                }, slideSpeed);
+            }
+        }
+
+        function shuffleSlides() {
+            console.log('Reshuffling slides...');
+            currentSlide = 0;
+            document.getElementById('slidesContainer').innerHTML = '';
+            mediaLoaded = 0;
+            loadSlides();
+            showSlide(0);
+            
+            // Update indicator
+            const indicator = document.getElementById('autoIndicator');
+            indicator.classList.add('shuffle');
+            document.getElementById('autoText').textContent = 'Shuffled!';
+            
+            setTimeout(() => {
+                indicator.classList.remove('shuffle');
+                document.getElementById('autoText').textContent = isAutoPlaying ? 'Auto Playing' : 'Paused';
+            }, 2000);
+        }
+
+        function toggleKenBurns() {
+            kenBurnsEnabled = !kenBurnsEnabled;
+            const btn = document.getElementById('kenBurnsBtn');
+            btn.classList.toggle('active', kenBurnsEnabled);
+            
+            // Apply to all existing images
+            slides.forEach(slide => {
+                const img = slide.querySelector('img');
+                if (img) {
+                    if (kenBurnsEnabled) {
+                        img.classList.add('ken-burns');
+                    } else {
+                        img.classList.remove('ken-burns');
+                    }
+                }
+            });
+        }
+
+        function setSpeed(speed) {
+            const speeds = [8000, 6000, 4000, 3000, 2000]; // 1=slowest, 5=fastest
+            slideSpeed = speeds[speed - 1];
+            
+            const speedControl = document.getElementById('speedControl');
+            const speedNames = ['Very Slow', 'Slow', 'Normal', 'Fast', 'Very Fast'];
+            speedControl.textContent = `Speed: ${speedNames[speed - 1]}`;
+            speedControl.classList.add('visible');
+            
+            setTimeout(() => speedControl.classList.remove('visible'), 3000);
+            
+            if (isAutoPlaying) {
+                startAutoPlay(); // Restart with new speed
+            }
+        }
+
+        function toggleHelp() {
+            const helpPanel = document.getElementById('helpPanel');
+            helpPanel.classList.toggle('visible');
+        }
+
+        function restartSlideshow() {
+            currentSlide = 0;
+            showSlide(0);
+            if (isAutoPlaying) {
+                startAutoPlay();
             }
         }
 
         // Keyboard controls
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowLeft') previousSlide();
-            if (e.key === 'ArrowRight') nextSlide();
-            if (e.key === ' ') {
-                e.preventDefault();
-                toggleAutoPlay();
-            }
-            if (e.key === 'f' || e.key === 'F11') {
-                e.preventDefault();
+            if (e.key === 'ArrowLeft') { previousSlide(); }
+            if (e.key === 'ArrowRight') { nextSlide(); }
+            if (e.key === ' ') { e.preventDefault(); toggleAutoPlay(); }
+            if (e.key === 'f' || e.key === 'F11') { 
+                e.preventDefault(); 
                 if (document.fullscreenElement) {
                     document.exitFullscreen();
                 } else {
                     document.documentElement.requestFullscreen();
                 }
+            }
+            if (e.key.toLowerCase() === 's') { shuffleSlides(); }
+            if (e.key.toLowerCase() === 'k') { toggleKenBurns(); }
+            if (e.key.toLowerCase() === 'h') { toggleHelp(); }
+            if (e.key.toLowerCase() === 'r') { restartSlideshow(); }
+            if (e.key === 'Escape') { 
+                document.getElementById('helpPanel').classList.remove('visible'); 
+            }
+            
+            // Speed controls
+            if (['1', '2', '3', '4', '5'].includes(e.key)) {
+                setSpeed(parseInt(e.key));
             }
         });
 
@@ -650,30 +907,22 @@
             if (endX - startX > 75) previousSlide();
         }, { passive: true });
 
-        // Initialize
+        // Initialize everything
         window.addEventListener('load', function() {
-            console.log('Starting slideshow initialization...');
+            console.log('Starting advanced slideshow...');
             loadSlides();
             showSlide(0);
             
+            // Force start if loading takes too long
             setTimeout(() => {
-                console.log(`Checking load status: ${mediaLoaded}/${totalMedia} loaded`);
-                if (mediaLoaded < totalMedia) {
-                    console.log('Some media failed to load, starting anyway...');
+                if (mediaLoaded < totalMedia * 0.8) {
+                    console.log('Loading timeout, starting with loaded media');
                     forceStartSlideshow();
                 }
-            }, 3000);
-            
-            setTimeout(() => {
-                if (mediaLoaded >= totalMedia) {
-                    document.getElementById('loadingScreen').classList.add('hidden');
-                    if (isAutoPlaying) {
-                        startAutoPlay();
-                    }
-                }
-            }, 2000);
+            }, 15000);
         });
 
+        // Prevent context menu on media
         document.addEventListener('contextmenu', e => {
             if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') {
                 e.preventDefault();
